@@ -240,7 +240,7 @@ class _SideMenuItemState extends State<SideMenuItem> {
         },
         highlightColor: Colors.transparent,
         focusColor: Colors.red,
-        hoverColor: Colors.transparent,
+        hoverColor: Colors.red,
         splashColor: Colors.transparent,
       ),
     );
