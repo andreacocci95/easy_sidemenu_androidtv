@@ -11,19 +11,21 @@ class SideMenuItem extends StatefulWidget {
   /// #### Side Menu Item
   ///
   /// This is a widget as [SideMenu] items with text and icon
-  const SideMenuItem({
-    Key? key,
-    this.onTap,
-    this.title,
-    this.icon,
-    this.iconWidget,
-    required this.priority,
-    this.badgeContent,
-    this.badgeColor,
-    this.tooltipContent,
-    this.trailing,
-    this.builder,
-  })  : assert(title != null || icon != null,
+  const SideMenuItem(
+      {Key? key,
+      this.onTap,
+      this.title,
+      this.icon,
+      this.iconWidget,
+      required this.priority,
+      this.badgeContent,
+      this.badgeColor,
+      this.tooltipContent,
+      this.trailing,
+      this.builder,
+      this.changeOnFocus,
+      this.focusColor})
+      : assert(title != null || icon != null,
             'Title and icon should not be empty at the same time'),
         super(key: key);
 
@@ -72,6 +74,10 @@ class SideMenuItem extends StatefulWidget {
   ///
   /// Builder has `(BuildContext context, SideMenuDisplayMode displayMode)`
   final SideMenuItemBuilder? builder;
+
+  final bool? changeOnFocus;
+
+  final Color? focusColor;
 
   @override
   _SideMenuItemState createState() => _SideMenuItemState();
@@ -161,88 +167,85 @@ class _SideMenuItemState extends State<SideMenuItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(
-        3.0,
-      ),
-      child: InkWell(
-        child: Padding(
-          padding: Global.style.itemOuterPadding,
-          child: Container(
-            height: Global.style.itemHeight,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: _setColor(),
-              borderRadius: Global.style.itemBorderRadius,
-            ),
-            child: ValueListenableBuilder(
-              valueListenable: Global.displayModeState,
-              builder: (context, value, child) {
-                if (widget.builder == null) {
-                  return Tooltip(
-                    message: (value == SideMenuDisplayMode.compact &&
-                            Global.style.showTooltip)
-                        ? widget.tooltipContent ?? widget.title ?? ""
-                        : "",
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical:
-                              value == SideMenuDisplayMode.compact ? 0 : 8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: Global.style.itemInnerSpacing,
-                          ),
-                          _generateIcon(widget.icon, widget.iconWidget),
-                          SizedBox(
-                            width: Global.style.itemInnerSpacing,
-                          ),
-                          if (value == SideMenuDisplayMode.open) ...[
-                            Expanded(
-                              child: Text(
-                                widget.title ?? '',
-                                style: widget.priority == currentPage.ceil()
-                                    ? const TextStyle(
-                                            fontSize: 17, color: Colors.black)
-                                        .merge(
-                                            Global.style.selectedTitleTextStyle)
-                                    : const TextStyle(
-                                            fontSize: 17, color: Colors.black54)
-                                        .merge(Global
-                                            .style.unselectedTitleTextStyle),
-                              ),
+    return InkWell(
+      child: Padding(
+        padding: Global.style.itemOuterPadding,
+        child: Container(
+          height: Global.style.itemHeight,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: _setColor(),
+            borderRadius: Global.style.itemBorderRadius,
+          ),
+          child: ValueListenableBuilder(
+            valueListenable: Global.displayModeState,
+            builder: (context, value, child) {
+              if (widget.builder == null) {
+                return Tooltip(
+                  message: (value == SideMenuDisplayMode.compact &&
+                          Global.style.showTooltip)
+                      ? widget.tooltipContent ?? widget.title ?? ""
+                      : "",
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: value == SideMenuDisplayMode.compact ? 0 : 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: Global.style.itemInnerSpacing,
+                        ),
+                        _generateIcon(widget.icon, widget.iconWidget),
+                        SizedBox(
+                          width: Global.style.itemInnerSpacing,
+                        ),
+                        if (value == SideMenuDisplayMode.open) ...[
+                          Expanded(
+                            child: Text(
+                              widget.title ?? '',
+                              style: widget.priority == currentPage.ceil()
+                                  ? const TextStyle(
+                                          fontSize: 17, color: Colors.black)
+                                      .merge(
+                                          Global.style.selectedTitleTextStyle)
+                                  : const TextStyle(
+                                          fontSize: 17, color: Colors.black54)
+                                      .merge(Global
+                                          .style.unselectedTitleTextStyle),
                             ),
-                            if (widget.trailing != null &&
-                                Global.showTrailing) ...[
-                              widget.trailing!,
-                              SizedBox(
-                                width: Global.style.itemInnerSpacing,
-                              ),
-                            ],
+                          ),
+                          if (widget.trailing != null &&
+                              Global.showTrailing) ...[
+                            widget.trailing!,
+                            SizedBox(
+                              width: Global.style.itemInnerSpacing,
+                            ),
                           ],
                         ],
-                      ),
+                      ],
                     ),
-                  );
-                } else {
-                  return widget.builder!(context, value as SideMenuDisplayMode);
-                }
-              },
-            ),
+                  ),
+                );
+              } else {
+                return widget.builder!(context, value as SideMenuDisplayMode);
+              }
+            },
           ),
         ),
-        onTap: () => widget.onTap?.call(widget.priority, Global.controller),
-        onHover: (value) {
-          setState(() {
-            isHovered = value;
-          });
-        },
-        highlightColor: Colors.transparent,
-        focusColor: Colors.red,
-        hoverColor: Colors.red,
-        splashColor: Colors.transparent,
       ),
+      onTap: () => widget.onTap?.call(widget.priority, Global.controller),
+      onHover: (value) {
+        setState(() {
+          isHovered = value;
+        });
+      },
+      onFocusChange: (widget.changeOnFocus ?? false)
+          ? (val) => widget.onTap?.call(widget.priority, Global.controller)
+          : (val) {},
+      highlightColor: Colors.transparent,
+      focusColor: widget.focusColor ?? Colors.transparent,
+      hoverColor: Colors.transparent,
+      splashColor: Colors.transparent,
     );
   }
 }
