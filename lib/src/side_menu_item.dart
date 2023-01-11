@@ -90,7 +90,8 @@ class _SideMenuItemState extends State<SideMenuItem> {
   @override
   void initState() {
     super.initState();
-    _nonNullableWrap(WidgetsBinding.instance)!.addPostFrameCallback((timeStamp) {
+    _nonNullableWrap(WidgetsBinding.instance)!
+        .addPostFrameCallback((timeStamp) {
       // set initialPage
       setState(() {
         currentPage = Global.controller.currentPage;
@@ -160,76 +161,88 @@ class _SideMenuItemState extends State<SideMenuItem> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      child: Padding(
-        padding: Global.style.itemOuterPadding,
-        child: Container(
-          height: Global.style.itemHeight,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: _setColor(),
-            borderRadius: Global.style.itemBorderRadius,
-          ),
-          child: ValueListenableBuilder(
-            valueListenable: Global.displayModeState,
-            builder: (context, value, child) {
-              if (widget.builder == null) {
-                return Tooltip(
-                  message: (value == SideMenuDisplayMode.compact && Global.style.showTooltip)
-                      ? widget.tooltipContent ?? widget.title ?? ""
-                      : "",
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: value == SideMenuDisplayMode.compact ? 0 : 8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: Global.style.itemInnerSpacing,
-                        ),
-                        _generateIcon(widget.icon, widget.iconWidget),
-                        SizedBox(
-                          width: Global.style.itemInnerSpacing,
-                        ),
-                        if (value == SideMenuDisplayMode.open) ...[
-                          Expanded(
-                            child: Text(
-                              widget.title ?? '',
-                              style: widget.priority == currentPage.ceil()
-                                  ? const TextStyle(fontSize: 17, color: Colors.black)
-                                      .merge(Global.style.selectedTitleTextStyle)
-                                  : const TextStyle(fontSize: 17, color: Colors.black54)
-                                      .merge(Global.style.unselectedTitleTextStyle),
-                            ),
+    return Container(
+      padding: EdgeInsets.all(
+        3.0,
+      ),
+      child: InkWell(
+        child: Padding(
+          padding: Global.style.itemOuterPadding,
+          child: Container(
+            height: Global.style.itemHeight,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: _setColor(),
+              borderRadius: Global.style.itemBorderRadius,
+            ),
+            child: ValueListenableBuilder(
+              valueListenable: Global.displayModeState,
+              builder: (context, value, child) {
+                if (widget.builder == null) {
+                  return Tooltip(
+                    message: (value == SideMenuDisplayMode.compact &&
+                            Global.style.showTooltip)
+                        ? widget.tooltipContent ?? widget.title ?? ""
+                        : "",
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical:
+                              value == SideMenuDisplayMode.compact ? 0 : 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: Global.style.itemInnerSpacing,
                           ),
-                          if (widget.trailing != null && Global.showTrailing) ...[
-                            widget.trailing!,
-                            SizedBox(
-                              width: Global.style.itemInnerSpacing,
+                          _generateIcon(widget.icon, widget.iconWidget),
+                          SizedBox(
+                            width: Global.style.itemInnerSpacing,
+                          ),
+                          if (value == SideMenuDisplayMode.open) ...[
+                            Expanded(
+                              child: Text(
+                                widget.title ?? '',
+                                style: widget.priority == currentPage.ceil()
+                                    ? const TextStyle(
+                                            fontSize: 17, color: Colors.black)
+                                        .merge(
+                                            Global.style.selectedTitleTextStyle)
+                                    : const TextStyle(
+                                            fontSize: 17, color: Colors.black54)
+                                        .merge(Global
+                                            .style.unselectedTitleTextStyle),
+                              ),
                             ),
+                            if (widget.trailing != null &&
+                                Global.showTrailing) ...[
+                              widget.trailing!,
+                              SizedBox(
+                                width: Global.style.itemInnerSpacing,
+                              ),
+                            ],
                           ],
                         ],
-                      ],
+                      ),
                     ),
-                  ),
-                );
-              } else {
-                return widget.builder!(context, value as SideMenuDisplayMode);
-              }
-            },
+                  );
+                } else {
+                  return widget.builder!(context, value as SideMenuDisplayMode);
+                }
+              },
+            ),
           ),
         ),
+        onTap: () => widget.onTap?.call(widget.priority, Global.controller),
+        onHover: (value) {
+          setState(() {
+            isHovered = value;
+          });
+        },
+        highlightColor: Colors.transparent,
+        focusColor: Colors.red,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
       ),
-      onTap: () => widget.onTap?.call(widget.priority, Global.controller),
-      onHover: (value) {
-        setState(() {
-          isHovered = value;
-        });
-      },
-      highlightColor: Colors.transparent,
-      focusColor: Colors.transparent,
-      hoverColor: Colors.transparent,
-      splashColor: Colors.transparent,
     );
   }
 }
