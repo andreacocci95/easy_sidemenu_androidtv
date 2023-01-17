@@ -11,21 +11,19 @@ class SideMenuItem extends StatefulWidget {
   /// #### Side Menu Item
   ///
   /// This is a widget as [SideMenu] items with text and icon
-  const SideMenuItem(
-      {Key? key,
-      this.onTap,
-      this.title,
-      this.icon,
-      this.iconWidget,
-      required this.priority,
-      this.badgeContent,
-      this.badgeColor,
-      this.tooltipContent,
-      this.trailing,
-      this.builder,
-      this.changeOnFocus,
-      this.focusColor})
-      : assert(title != null || icon != null,
+  const SideMenuItem({
+    Key? key,
+    this.onTap,
+    this.title,
+    this.icon,
+    this.iconWidget,
+    required this.priority,
+    this.badgeContent,
+    this.badgeColor,
+    this.tooltipContent,
+    this.trailing,
+    this.builder,
+  })  : assert(title != null || icon != null,
             'Title and icon should not be empty at the same time'),
         super(key: key);
 
@@ -74,10 +72,6 @@ class SideMenuItem extends StatefulWidget {
   ///
   /// Builder has `(BuildContext context, SideMenuDisplayMode displayMode)`
   final SideMenuItemBuilder? builder;
-
-  final bool? changeOnFocus;
-
-  final Color? focusColor;
 
   @override
   _SideMenuItemState createState() => _SideMenuItemState();
@@ -168,6 +162,9 @@ class _SideMenuItemState extends State<SideMenuItem> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      customBorder: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
       child: Padding(
         padding: Global.style.itemOuterPadding,
         child: Container(
@@ -239,11 +236,7 @@ class _SideMenuItemState extends State<SideMenuItem> {
           isHovered = value;
         });
       },
-      onFocusChange: (widget.changeOnFocus ?? false)
-          ? (val) => widget.onTap?.call(widget.priority, Global.controller)
-          : (val) {},
       highlightColor: Colors.transparent,
-      focusColor: widget.focusColor ?? Colors.transparent,
       hoverColor: Colors.transparent,
       splashColor: Colors.transparent,
     );
