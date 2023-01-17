@@ -161,12 +161,12 @@ class _SideMenuItemState extends State<SideMenuItem> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      customBorder: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Padding(
-        padding: Global.style.itemOuterPadding,
+    return Padding(
+      padding: Global.style.itemOuterPadding,
+      child: InkWell(
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
         child: Container(
           height: Global.style.itemHeight,
           width: double.infinity,
@@ -229,16 +229,16 @@ class _SideMenuItemState extends State<SideMenuItem> {
             },
           ),
         ),
+        onTap: () => widget.onTap?.call(widget.priority, Global.controller),
+        onHover: (value) {
+          setState(() {
+            isHovered = value;
+          });
+        },
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
       ),
-      onTap: () => widget.onTap?.call(widget.priority, Global.controller),
-      onHover: (value) {
-        setState(() {
-          isHovered = value;
-        });
-      },
-      highlightColor: Colors.transparent,
-      hoverColor: Colors.transparent,
-      splashColor: Colors.transparent,
     );
   }
 }
