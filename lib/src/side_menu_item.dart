@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:easy_sidemenu/src/side_menu_display_mode.dart';
 
@@ -149,11 +149,12 @@ class _SideMenuItemState extends State<SideMenuItem> {
     if (widget.badgeContent == null) {
       return icon;
     } else {
-      return Badge(
+      return badges.Badge(
         badgeContent: widget.badgeContent!,
-        badgeColor: widget.badgeColor ?? Colors.red,
-        alignment: Alignment.bottomRight,
-        position: const BadgePosition(top: -13, end: -7),
+        badgeStyle: badges.BadgeStyle(
+          badgeColor: widget.badgeColor ?? Colors.red,
+        ),
+        position: badges.BadgePosition.custom(top: -13, end: -7),
         child: icon,
       );
     }
@@ -167,6 +168,15 @@ class _SideMenuItemState extends State<SideMenuItem> {
         customBorder: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
+        onTap: () => widget.onTap?.call(widget.priority, Global.controller),
+        onHover: (value) {
+          setState(() {
+            isHovered = value;
+          });
+        },
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
         child: Container(
           height: Global.style.itemHeight,
           width: double.infinity,
@@ -229,15 +239,6 @@ class _SideMenuItemState extends State<SideMenuItem> {
             },
           ),
         ),
-        onTap: () => widget.onTap?.call(widget.priority, Global.controller),
-        onHover: (value) {
-          setState(() {
-            isHovered = value;
-          });
-        },
-        highlightColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        splashColor: Colors.transparent,
       ),
     );
   }
