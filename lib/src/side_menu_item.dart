@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart' as badges;
+import 'package:badges/badges.dart' as bdg;
 import 'package:flutter/material.dart';
 import 'package:easy_sidemenu/src/side_menu_display_mode.dart';
 
@@ -128,7 +128,13 @@ class _SideMenuItemState extends State<SideMenuItem> {
   /// Set background color of [SideMenuItem]
   Color _setColor() {
     if (widget.priority == currentPage) {
-      return Global.style.selectedColor ?? Theme.of(context).highlightColor;
+      if (isHovered) {
+        return Global.style.selectedHoverColor ??
+            Global.style.selectedColor ??
+            Theme.of(context).highlightColor;
+      } else {
+        return Global.style.selectedColor ?? Theme.of(context).highlightColor;
+      }
     } else if (isHovered) {
       return Global.style.hoverColor ?? Colors.transparent;
     } else {
@@ -149,12 +155,12 @@ class _SideMenuItemState extends State<SideMenuItem> {
     if (widget.badgeContent == null) {
       return icon;
     } else {
-      return badges.Badge(
+      return bdg.Badge(
         badgeContent: widget.badgeContent!,
-        badgeStyle: badges.BadgeStyle(
+        badgeStyle: bdg.BadgeStyle(
           badgeColor: widget.badgeColor ?? Colors.red,
         ),
-        position: badges.BadgePosition.custom(top: -13, end: -7),
+        position: bdg.BadgePosition.topEnd(top: -13, end: -7),
         child: icon,
       );
     }
@@ -208,17 +214,21 @@ class _SideMenuItemState extends State<SideMenuItem> {
                         ),
                         if (value == SideMenuDisplayMode.open) ...[
                           Expanded(
-                            child: Text(
-                              widget.title ?? '',
-                              style: widget.priority == currentPage.ceil()
-                                  ? const TextStyle(
-                                          fontSize: 17, color: Colors.black)
-                                      .merge(
-                                          Global.style.selectedTitleTextStyle)
-                                  : const TextStyle(
-                                          fontSize: 17, color: Colors.black54)
-                                      .merge(Global
-                                          .style.unselectedTitleTextStyle),
+                            child: FittedBox(
+                              alignment: Alignment.centerLeft,
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                widget.title ?? '',
+                                style: widget.priority == currentPage.ceil()
+                                    ? const TextStyle(
+                                            fontSize: 17, color: Colors.black)
+                                        .merge(
+                                            Global.style.selectedTitleTextStyle)
+                                    : const TextStyle(
+                                            fontSize: 17, color: Colors.black54)
+                                        .merge(Global
+                                            .style.unselectedTitleTextStyle),
+                              ),
                             ),
                           ),
                           if (widget.trailing != null &&
