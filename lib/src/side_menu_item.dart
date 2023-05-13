@@ -90,7 +90,8 @@ class _SideMenuItemState extends State<SideMenuItem> {
   @override
   void initState() {
     super.initState();
-    _nonNullableWrap(WidgetsBinding.instance)!.addPostFrameCallback((timeStamp) {
+    _nonNullableWrap(WidgetsBinding.instance)!
+        .addPostFrameCallback((timeStamp) {
       // set initialPage
       setState(() {
         currentPage = Global.controller.currentPage;
@@ -167,9 +168,21 @@ class _SideMenuItemState extends State<SideMenuItem> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      child: Padding(
-        padding: Global.style.itemOuterPadding,
+    return Padding(
+      padding: Global.style.itemOuterPadding,
+      child: InkWell(
+        customBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        onTap: () => widget.onTap?.call(widget.priority, Global.controller),
+        onHover: (value) {
+          setState(() {
+            isHovered = value;
+          });
+        },
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
         child: Container(
           height: Global.style.itemHeight,
           width: double.infinity,
@@ -182,7 +195,8 @@ class _SideMenuItemState extends State<SideMenuItem> {
             builder: (context, value, child) {
               if (widget.builder == null) {
                 return Tooltip(
-                  message: (value == SideMenuDisplayMode.compact && Global.style.showTooltip)
+                  message: (value == SideMenuDisplayMode.compact &&
+                          Global.style.showTooltip)
                       ? widget.tooltipContent ?? widget.title ?? ""
                       : "",
                   child: Padding(
@@ -206,14 +220,19 @@ class _SideMenuItemState extends State<SideMenuItem> {
                               child: Text(
                                 widget.title ?? '',
                                 style: widget.priority == currentPage.ceil()
-                                    ? const TextStyle(fontSize: 17, color: Colors.black)
-                                        .merge(Global.style.selectedTitleTextStyle)
-                                    : const TextStyle(fontSize: 17, color: Colors.black54)
-                                        .merge(Global.style.unselectedTitleTextStyle),
+                                    ? const TextStyle(
+                                            fontSize: 17, color: Colors.black)
+                                        .merge(
+                                            Global.style.selectedTitleTextStyle)
+                                    : const TextStyle(
+                                            fontSize: 17, color: Colors.black54)
+                                        .merge(Global
+                                            .style.unselectedTitleTextStyle),
                               ),
                             ),
                           ),
-                          if (widget.trailing != null && Global.showTrailing) ...[
+                          if (widget.trailing != null &&
+                              Global.showTrailing) ...[
                             widget.trailing!,
                             SizedBox(
                               width: Global.style.itemInnerSpacing,
@@ -231,16 +250,6 @@ class _SideMenuItemState extends State<SideMenuItem> {
           ),
         ),
       ),
-      onTap: () => widget.onTap?.call(widget.priority, Global.controller),
-      onHover: (value) {
-        setState(() {
-          isHovered = value;
-        });
-      },
-      highlightColor: Colors.transparent,
-      focusColor: Colors.transparent,
-      hoverColor: Colors.transparent,
-      splashColor: Colors.transparent,
     );
   }
 }
